@@ -2,37 +2,74 @@
   text-align: center;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
 .App-header {
   background-color: #282c34;
-  min-height: 100vh;
+  /* min-height: 100vh; */
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
   justify-content: center;
   font-size: calc(10px + 2vmin);
   color: white;
 }
 
-.App-link {
-  color: #61dafb;
+.next-button {
+  position:absolute;
+  left:98%;
+  top:50%
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.previous-button {
+  position:absolute;
+  left:2%;
+  top:50%;
+}
+
+.cube-builder {
+  background-color: #757575;
+  width: 250px;
+  position:absolute;
+  left:0%;
+  top:20%;
+}
+.color-builder {
+  background-color: #757575;
+  width: 250px;
+  position:absolute;
+  left:88%;
+  top:40%;
+}
+
+.builder-interface{
+  background-color: #757575;
+  width: 50vw;
+  height: 20vh;
+  position:absolute;
+  left:25%;
+  top:80%;
+}
+
+.slider {
+  width: 90%;
+}
+
+.picker {
+  position: relative;
+}
+
+.swatch {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  border: 3px solid #fff;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1), inset 0 0 0 1px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+}
+
+.popover {
+  position: absolute;
+  top: calc(100% + 2px);
+  left: 0;
+  border-radius: 9px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
 }

@@ -4,140 +4,118 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { gsap } from "gsap";
 
-function PopCanvas(){
+function PopCanvas({work}){
 let ref = useRef();
 
-const cameraParams = {colors: [0xFF00FF, 0x0000FF, 0xFF0000, 0x00FFFF, 0xFFFF00, 0x00FF00]}
-
 useEffect(() => {
-  let renderer, scene, camera, cube;
-  let canvas = ref.current;
-  renderer = new THREE.WebGLRenderer({
-      canvas : canvas
-    });
-  renderer.setSize(1920,1080);
-  renderer.setClearColor(0x000000);  
-  scene = new THREE.Scene();
+  if(work){
+    let renderer, scene, camera, cube;
+    let canvas = ref.current;
+    renderer = new THREE.WebGLRenderer({
+        canvas : canvas
+      });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setClearColor(0x000000);  
+    scene = new THREE.Scene();
 
 
-  camera = new THREE.PerspectiveCamera(70,1000/600, .01, 10000 );
-  camera.position.set(300, 300, 300);
-  camera.lookAt(new THREE.Vector3(0,0,0));
-  scene.add(camera);
+    camera = new THREE.PerspectiveCamera(70,1000/600, .01, 10000 );
+    camera.position.set(work.x_camera_start, work.y_camera_start, work.z_camera_start);
+    camera.lookAt(new THREE.Vector3(0,0,0));
+    scene.add(camera);
 
-  let controls = new OrbitControls(camera, renderer.domElement);  
+    let controls = new OrbitControls(camera, renderer.domElement);  
 
-  let directionalLight = new THREE.DirectionalLight( 0xFF00FF, 1.0 );
-  directionalLight.position.set( 350, 0, 0  );
-  directionalLight.lookAt(new THREE.Vector3(0,0,0));
-  scene.add( directionalLight );
+    let directionalLight = new THREE.DirectionalLight( parseInt(work.light_1), 1.0 );
+    directionalLight.position.set( 350, 0, 0  );
+    directionalLight.lookAt(new THREE.Vector3(0,0,0));
+    scene.add( directionalLight );
 
-  directionalLight = new THREE.DirectionalLight( 0x0000FF, 1.0 );
-  directionalLight.position.set( -350, 0, 0  );
-  directionalLight.lookAt(new THREE.Vector3(0,0,0));
-  scene.add( directionalLight );
+    directionalLight = new THREE.DirectionalLight( parseInt(work.light_2), 1.0 );
+    directionalLight.position.set( -350, 0, 0  );
+    directionalLight.lookAt(new THREE.Vector3(0,0,0));
+    scene.add( directionalLight );
 
-  directionalLight = new THREE.DirectionalLight( 0xFF0000, 1.0 );
-	directionalLight.position.set( 0, 0, 350  );
-	directionalLight.lookAt(new THREE.Vector3(0,0,0));
-	scene.add( directionalLight );
-  
-  directionalLight = new THREE.DirectionalLight( 0x00FFFF, 1.0 );
-	directionalLight.position.set( 0, 0, -350  );
-	directionalLight.lookAt(new THREE.Vector3(0,0,0));
-	scene.add( directionalLight );
-  
-  directionalLight = new THREE.DirectionalLight( 0xFFFF00, 1.0 );
-	directionalLight.position.set( 0, -200, 0  );
-	directionalLight.lookAt(new THREE.Vector3(0,0,0));
-	scene.add( directionalLight );
-  
-	directionalLight = new THREE.DirectionalLight( 0x00FF00, 1.0 );
-	directionalLight.position.set( 0, 200, 0  );
-	directionalLight.lookAt(new THREE.Vector3(0,0,0));
-	scene.add( directionalLight );
-
-
-  var cubes = new THREE.Object3D();
-
-  const cubeParams = {
-    zStart: -5,
-    zEnd: 5,
-    xStart: -5,
-    xEnd: 5,
-    yStart: -5,
-    yEnd: 5,
-    cubeZ: 48,
-    cubeX: 48,
-    cubeY: 48,
-    rAmount: 0,
-    rDelay: .5,
-    rTime: 24.5,
-    xyzScaleTime: 10,
-    xyzScale: 0.001,
-    xyzScaleDelay: .5,
-    xyzPosition: 50,
-    xyzPositionDelay: .5,
-    xyzPositionTime: 10
-  }
-
-  function createCubes(){
-    var geometry = new THREE.BoxGeometry(cubeParams.cubeX,cubeParams.cubeY,cubeParams.cubeZ);
-    var texture = new THREE.MeshLambertMaterial({color:0xFFFFFF});
-    for(var h = cubeParams.zStart; h < cubeParams.zEnd; h++){
-      for(var i=cubeParams.xStart;i<cubeParams.xEnd;i++){
-        for(var j=cubeParams.yStart;j<cubeParams.yEnd;j++){
-          cube = new THREE.Mesh(geometry, texture);
-          cube.position.z = cubeParams.cubeZ*h;
-          cube.position.x = cubeParams.cubeX*i;
-          cube.position.y = cubeParams.cubeY*j;
-
-          gsap.to(cube.rotation, cubeParams.rTime,{
-              x: cubeParams.rAmount,
-              y: cubeParams.rAmount,
-              z: cubeParams.rAmount,
-              repeat: -1,
-              yoyo: true,
-              delay: cubeParams.rDelay *(h+i+j),
-            });
-            gsap.to(cube.scale, cubeParams.xyzScaleTime,{
-              y: cubeParams.xyzScale,
-              x: cubeParams.xyzScale,
-              z: cubeParams.xyzScale,
-              repeat: -1,
-              yoyo: true,
-              delay: cubeParams.xyzScaleDelay *(h+i+j),
-            });
-            gsap.to(cube.position, cubeParams.xyzPositionTime,{
-              y: cubeParams.xyzPosition * j,
-              x: cubeParams.xyzPosition * i,
-              z: cubeParams.xyzPosition * h,
-              repeat: -1,
-              yoyo: true,
-              delay: cubeParams.xyzPositionDelay *(h+i+j),
-            });
-          cubes.add(cube);
-        }
-      } 
-    }
+    directionalLight = new THREE.DirectionalLight( parseInt(work.light_3), 1.0 );
+    directionalLight.position.set( 0, 0, 350  );
+    directionalLight.lookAt(new THREE.Vector3(0,0,0));
+    scene.add( directionalLight );
     
-    scene.add(cubes);
-  };  
+    directionalLight = new THREE.DirectionalLight( parseInt(work.light_4), 1.0 );
+    directionalLight.position.set( 0, 0, -350  );
+    directionalLight.lookAt(new THREE.Vector3(0,0,0));
+    scene.add( directionalLight );
+    
+    directionalLight = new THREE.DirectionalLight( parseInt(work.light_5), 1.0 );
+    directionalLight.position.set( 0, -200, 0  );
+    directionalLight.lookAt(new THREE.Vector3(0,0,0));
+    scene.add( directionalLight );
+    
+    directionalLight = new THREE.DirectionalLight( parseInt(work.light_6), 1.0 );
+    directionalLight.position.set( 0, 200, 0  );
+    directionalLight.lookAt(new THREE.Vector3(0,0,0));
+    scene.add( directionalLight );
 
-const render = function () {
-    requestAnimationFrame(render);
-  
-    renderer.render(scene, camera);
-};
-createCubes();
-render();
 
-              }, []);
+    var cubes = new THREE.Object3D();
+
+    function createCubes(){
+      var geometry = new THREE.BoxGeometry(work.x_cube, work.y_cube, work.z_cube);
+      var texture = new THREE.MeshLambertMaterial({color:0xFFFFFF});
+      for(var h = work.z_start; h < work.z_end; h++){
+        for(var i=work.x_start;i<work.x_end;i++){
+          for(var j=work.y_start;j<work.y_end;j++){
+           cube = new THREE.Mesh(geometry, texture);
+           cube.position.z = work.z_cube*h;
+           cube.position.x = work.x_cube*i;
+           cube.position.y = work.y_cube*j;
+
+            gsap.to(cube.rotation, work.r_time,{
+                x: work.r_amount,
+                y: work.r_amount,
+                z: work.r_amount,
+                repeat: -1,
+                yoyo: true,
+                delay: Math.abs(work.r_delay) *(h+i+j),
+              });
+              gsap.to(cube.scale, work.xyz_scale_time,{
+                y: work.xyz_scale,
+                x: work.xyz_scale,
+                z: work.xyz_scale,
+                repeat: -1,
+                yoyo: true,
+                delay: Math.abs(work.xyz_scale_delay) *(h+i+j),
+              });
+              gsap.to(cube.position, work.xyz_position_time,{
+                y: work.xyz_position * j,
+                x: work.xyz_position * i,
+                z: work.xyz_position * h,
+                repeat: -1,
+                yoyo: true,
+                delay: Math.abs(work.xyz_position_delay) *(h+i+j),
+              });
+            cubes.add(cube);
+          }
+        } 
+      }
+      
+      scene.add(cubes);
+    };  
+
+  const render = function () {
+      requestAnimationFrame(render);
+    
+      renderer.render(scene, camera);
+  };
+  createCubes();
+  render();
+  }
+              }, [work]);
 
      return (
          <canvas
             ref={ref} 
-             style={{ width: '1000px', height: '600px' }}
+             style={{ width: "100vw", height: '100vh' }}
          />
      );
  };
