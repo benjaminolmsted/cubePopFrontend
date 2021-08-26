@@ -14,15 +14,77 @@
 }
 
 .next-button {
+  background-color: transparent;
+  color: white;
+  font-size: 32px;
+  border: none;
   position:absolute;
-  left:98%;
+  left:97%;
   top:50%
 }
 
 .previous-button {
+  background-color: transparent;
+  color: white;
+  font-size: 32px;
+  border: none;
   position:absolute;
-  left:2%;
+  left:1%;
   top:50%;
+}
+
+.next-button:hover{
+  font-size: 48px;
+  cursor: pointer;
+}
+
+.previous-button:hover {
+  font-size: 48px;
+  cursor: pointer;
+}
+
+.delete-button:hover{
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.builder-button:hover{
+  font-size: 28px;
+  cursor: pointer;
+}
+
+.delete-button {
+  background-color: transparent;
+  color: rgb(194, 194, 194);
+  font-size: 18px;
+  border: none;
+  position:absolute;
+  left:1%;
+  top:5%;
+}
+
+.login-button {
+  background-color: transparent;
+  color: rgb(194, 194, 194);
+  font-size: 18px;
+  border: none;
+  position:absolute;
+  left:95%;
+  top:5%;
+}
+.login-button:hover{
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.builder-button{
+  background-color: transparent;
+  color: rgb(194, 194, 194);
+  font-size: 22px;
+  border: none;
+  position:absolute;
+  left:48%;
+  top:90%;
 }
 
 .cube-builder {
@@ -30,17 +92,25 @@
   width: 250px;
   position:absolute;
   left:0%;
-  top:20%;
+  top:10%;
 }
 .color-builder {
   background-color: #757575;
   width: 250px;
   position:absolute;
   left:88%;
-  top:40%;
+  top:30%;
 }
 
+.save-button {
+  width: 20%;
+}
+.cancel-button {
+  width: 20%;
+}
 .builder-interface{
+  display: flex;
+  flex-direction: column;
   background-color: #757575;
   width: 50vw;
   height: 20vh;
@@ -72,4 +142,16 @@
   left: 0;
   border-radius: 9px;
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+input {
+  width: 90%;
+}
+
+.login {
+  width: 200px;
+  position: absolute;
+  top: 3%;
+  left: 88%;
+  background-color: #757575;
 }

@@ -3,12 +3,13 @@ import PopCanvas from './PopCanvas'
 import Slider from '@material-ui/core/Slider';
 import { PopoverPicker } from './PopoverPicker';
 
-function Gallery({user, works, setWorks}) {
+function Gallery({user, setUser, works, setWorks}) {
     const [currentWork, setCurrentWork ]= useState(0)
     const [formValue, setFormValue] = useState({});
-    const [xValue, setXValue] = useState(5)
     const [builderWork, setBuilderWork] = useState({})
     const [showBuilder, setShowBuilder] = useState(false)
+    const [showLogin, setShowLogin] = useState(false)
+    const [login, setLogin] = useState("")
     const [light_1, setLight_1] = useState("#000000")
     const [light_2, setLight_2] = useState("#000000")
     const [light_3, setLight_3] = useState("#000000")
@@ -89,7 +90,6 @@ function Gallery({user, works, setWorks}) {
     }
 
     function deleteWork() {
-        console.log(`deleting work_id: ${works[currentWork].id}`)
         fetch(`http://localhost:9292/works/${works[currentWork].id}`, { 
             method: 'DELETE'
         }).then(resp=>resp.json())
@@ -104,41 +104,81 @@ function Gallery({user, works, setWorks}) {
     function onSave(){
         console.log("saving work...")
         delete builderWork.id
+        builderWork.user_id = user.id
         fetch(`http://localhost:9292/works`, {
             method: `POST`,
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(builderWork)
+        }).then(res=>res.json())
+        .then(newWork => {
+           setWorks([...works, newWork]) 
+           //let index = works.findIndex(w=>w.id === newWork.id)
+           setCurrentWork(works.length)
+           //console.log(index, works.length)
+           setShowBuilder(false)
         })
 
     }
 
-
     function handleChange(e){
         console.log(e.target.value)
-        setFormValue({ ...formValue,
-            [e.target.name]: e.target.value})
+        //setFormValue({ ...formValue,
+           // [e.target.name]: e.target.value})
         setBuilderWork({ ...builderWork,
-                            [e.target.name]: parseInt(e.target.value)
+                            [e.target.name]: parseFloat(e.target.value)
                         } )  
     }
 
-
     function builder() {
-        setShowBuilder(true)
+        setShowBuilder(!showBuilder)
         setBuilderWork({...works[currentWork]})
+    }
+
+    function cancelBuild(){
+        setShowBuilder(false)
+    }
+
+    function loginFlow(){
+        if(user){
+            setUser(null)
+        }else{
+            setShowLogin(true)
+        }
+    }
+
+   function handleLoginChange(e){
+        setLogin(e.target.value)
+    }
+
+    function handleLogin(e){
+        e.preventDefault()
+        fetch(`http://localhost:9292/users`, { 
+            method: 'POST', 
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({email: login})
+        }).then(res=> res.json())
+        .then(user => {
+            console.log(user)
+            setUser(user)
+        })
+
+
+
+        setShowLogin(false)
     }
 
     return (
         <>
         <div className="canvasContainer">
+            <button className="login-button" onClick={loginFlow}>{user? "logout" : "login"} </button>
             <button className="previous-button" onClick={previousWork}>❮</button>
             <button className="next-button" onClick={nextWork}>❯</button>
-            {(user && works[currentWork] && user.userId === works[currentWork].user_id) ? <button onClick={deleteWork}>delete</button> : null}
-            <button onClick={builder}>builder</button>
+            {(!showBuilder && user && works[currentWork] && user.id === works[currentWork].user_id) ? <button onClick={deleteWork} className="delete-button">delete</button> : null}
+            <button onClick={builder} className="builder-button">builder</button>
             <PopCanvas work={showBuilder? builderWork : works[currentWork]}></PopCanvas>
             
                 
-                {showBuilder? (
+                {showBuilder ? (
                     <><div className="cube-builder">
                         <label htmlFor="x_start">x_start: {formValue.x_start}</label>
                         <input onChange={handleChange } type="range" min="-5" max="0" value={formValue.x_start} className="slider" name="x_start" ></input> 
@@ -152,30 +192,30 @@ function Gallery({user, works, setWorks}) {
                         <input onChange={handleChange } type="range" min="-5" max="0" value={formValue.z_start} className="slider" name="z_start" ></input> 
                         <label htmlFor="z_end">z_end: {formValue.z_end}</label>
                         <input onChange={handleChange } type="range" min="1" max="5" value={formValue.z_end} className="slider" name="z_end" ></input>
-                        <label>X Size</label>
-                        <input onChange={handleChange } type="number" min="0" max="125" value={formValue.x_cube} className="slider" name="x_cube" ></input>
-                        <label>Y Size</label>
-                        <input onChange={handleChange } type="number" min="0" max="125" value={formValue.y_cube} className="slider" name="y_cube" ></input>
-                        <label>Z Size</label>
-                        <input onChange={handleChange } type="number" min="0" max="125" value={formValue.z_cube} className="slider" name="z_cube" ></input>
+                        <label>X_Size</label>
+                        <input onChange={handleChange } type="number" min="0" max="125" value={formValue.x_cube} className="cube-input" name="x_cube" ></input>
+                        <label>Y_Size</label>
+                        <input onChange={handleChange } type="number" min="0" max="125" value={formValue.y_cube} className="cube-input" name="y_cube" ></input>
+                        <label>Z_Size</label>
+                        <input onChange={handleChange } type="number" min="0" max="125" value={formValue.z_cube} className="cube-input" name="z_cube" ></input>
                         <label>Rotation</label>
-                        <input onChange={handleChange } type="number" min="0" max="25" step="any" value={formValue.r_amount} className="slider" name="r_amount" ></input>
+                        <input onChange={handleChange } type="number" min="0" max="25" step="0.1" value={formValue.r_amount} className="cube-input" name="r_amount" ></input>
                         <label>Rotation Time</label>
-                        <input onChange={handleChange } type="number" min="0" max="50" step="any" value={formValue.r_time} className="slider" name="r_time" ></input>
+                        <input onChange={handleChange } type="number" min="0" max="50" step="0.1" value={formValue.r_time} className="cube-input" name="r_time" ></input>
                         <label>Rotation Delay</label>
-                        <input onChange={handleChange } type="number" min="0" max="10" step="any" value={formValue.r_delay} className="slider" name="r_delay" ></input>
+                        <input onChange={handleChange } type="number" min="0" max="10" step="0.01" value={formValue.r_delay} className="cube-input" name="r_delay" ></input>
                         <label>Position</label>
-                        <input onChange={handleChange } type="number" min="0" max="400" step="any" value={formValue.xyz_position} className="slider" name="xyz_position" ></input>
+                        <input onChange={handleChange } type="number" min="0" max="400" step="0.1" value={formValue.xyz_position} className="cube-input" name="xyz_position" ></input>
                         <label>Position Time</label>
-                        <input onChange={handleChange } type="number" min="0" max="50" step="any" value={formValue.xyz_position_time} className="slider" name="xyz_position_time" ></input>
+                        <input onChange={handleChange } type="number" min="0" max="50" step="0.1" value={formValue.xyz_position_time} className="cube-input" name="xyz_position_time" ></input>
                         <label>Position Delay</label>
-                        <input onChange={handleChange } type="number" min="0" max="10" step="any" value={formValue.xyz_position_delay} className="slider" name="xyz_position_delay" ></input>
+                        <input onChange={handleChange } type="number" min="0" max="10" step="0.01" value={formValue.xyz_position_delay} className="cube-input" name="xyz_position_delay" ></input>
                         <label>Scale</label>
-                        <input onChange={handleChange } type="number" min="0" max="400" step="any" value={formValue.xyz_scale} className="slider" name="xyz_scale" ></input>
+                        <input onChange={handleChange } type="number" min="0" max="400" step="0.1" value={formValue.xyz_scale} className="cube-input" name="xyz_scale" ></input>
                         <label>Scale Time</label>
-                        <input onChange={handleChange } type="number" min="0" max="50" step="any" value={formValue.xyz_scale_time} className="slider" name="xyz_scale_time" ></input>
+                        <input onChange={handleChange } type="number" min="0" max="50" step="0.1" value={formValue.xyz_scale_time} className="cube-input" name="xyz_scale_time" ></input>
                         <label>Scale Delay</label>
-                        <input onChange={handleChange } type="number" min="0" max="10" step="0.01" value={formValue.xyz_scale_delay} className="slider" name="xyz_scale_delay" ></input>
+                        <input onChange={handleChange } type="number" min="0" max="10" step="0.01" value={formValue.xyz_scale_delay} className="cube-input" name="xyz_scale_delay" ></input>
                     </div>
                     <div className="color-builder">
                         <label> Light 1 </label>
@@ -192,11 +232,32 @@ function Gallery({user, works, setWorks}) {
                         <PopoverPicker onChange={onColorChange6} color={light_6}></PopoverPicker>
                     </div>
                     <div className="builder-interface">
-                        <button onClick={onSave}>save</button>
-
+                        {user ? <button onClick={onSave} className="save-button">save</button> : null}
+                        <button onClick={cancelBuild} className="cancel-button">cancel</button>
+                        <label htmlFor="x_camera_start">x_camera_start: {formValue.x_camera_start}</label>
+                        <input onChange={handleChange } type="range" min="-1200" max="1200" value={formValue.x_camera_start} className="slider" name="x_camera_start" id="x_camera_start"></input> 
+                        {/* <label htmlFor="x_camera_end">x_camera_end: {formValue.x_camera_end} </label>
+                        <input onChange={handleChange } type="range" min="-1200" max="1200" value={formValue.x_camera_end} className="slider" name="x_camera_end" ></input>  */}
+                        <label htmlFor="y_camera_start">y_camera_start: {formValue.y_camera_start} </label>
+                        <input onChange={handleChange } type="range" min="-1200" max="1200" value={formValue.y_camera_start} className="slider" name="y_camera_start" ></input> 
+                        {/* <label htmlFor="y_camera_end">y_camera_end: {formValue.y_camera_end}</label>
+                        <input onChange={handleChange } type="range" min="-1200" max="1200" value={formValue.y_camera_end} className="slider" name="y_camera_end" ></input> */}
+                        <label htmlFor="z_camera_start">z_camera_start: {formValue.z_camera_start}</label>
+                        <input onChange={handleChange } type="range" min="-1200" max="1200" value={formValue.z_camera_start} className="slider" name="z_camera_start" ></input> 
+                        {/* <label htmlFor="z_camera_end">z_camera_end: {formValue.z_camera_end}</label>
+                        <input onChange={handleChange } type="range" min="-1200" max="1200" value={formValue.z_camera_end} className="slider" name="z_camera_end" ></input> */}
                     </div>
                     </>
                 ) : null }
+                {showLogin ?  ( <div className="login">
+                                 
+                        <form onSubmit={handleLogin}>
+                            <label htmlFor="fname">email</label>
+                            <input type="text" id="email" name="email" onChange={handleLoginChange} value = {login}></input>
+                            <input type="submit" value="signin/up"></input>
+                        </form>
+                                
+                            </div> )  : null }
             
         </div>
         </>

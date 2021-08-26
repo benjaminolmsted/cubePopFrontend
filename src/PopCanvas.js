@@ -23,6 +23,14 @@ useEffect(() => {
     camera.position.set(work.x_camera_start, work.y_camera_start, work.z_camera_start);
     camera.lookAt(new THREE.Vector3(0,0,0));
     scene.add(camera);
+    // gsap.to(camera.position, 12,{
+    //   x: work.x_camera_end,
+    //   y:  work.y_camera_end,
+    //   z:  work.z_camera_end,
+    //   repeat: -1,
+    //   yoyo: true,
+    //   delay: .5,
+    // });
 
     let controls = new OrbitControls(camera, renderer.domElement);  
 
@@ -61,7 +69,8 @@ useEffect(() => {
 
     function createCubes(){
       var geometry = new THREE.BoxGeometry(work.x_cube, work.y_cube, work.z_cube);
-      var texture = new THREE.MeshLambertMaterial({color:0xFFFFFF});
+      var texture = new THREE.MeshLambertMaterial({color:0xFFFFFF,
+                                                  wireframe: work.is_wireframe});
       for(var h = work.z_start; h < work.z_end; h++){
         for(var i=work.x_start;i<work.x_end;i++){
           for(var j=work.y_start;j<work.y_end;j++){
@@ -76,7 +85,7 @@ useEffect(() => {
                 z: work.r_amount,
                 repeat: -1,
                 yoyo: true,
-                delay: Math.abs(work.r_delay) *(h+i+j),
+                delay: Math.abs(work.r_delay) *Math.abs((h+i+j)),
               });
               gsap.to(cube.scale, work.xyz_scale_time,{
                 y: work.xyz_scale,
@@ -84,7 +93,7 @@ useEffect(() => {
                 z: work.xyz_scale,
                 repeat: -1,
                 yoyo: true,
-                delay: Math.abs(work.xyz_scale_delay) *(h+i+j),
+                delay: Math.abs(work.xyz_scale_delay) *Math.abs((h+i+j)),
               });
               gsap.to(cube.position, work.xyz_position_time,{
                 y: work.xyz_position * j,
@@ -92,7 +101,7 @@ useEffect(() => {
                 z: work.xyz_position * h,
                 repeat: -1,
                 yoyo: true,
-                delay: Math.abs(work.xyz_position_delay) *(h+i+j),
+                delay: Math.abs(work.xyz_position_delay) * Math.abs((h+i+j)),
               });
             cubes.add(cube);
           }
@@ -101,14 +110,19 @@ useEffect(() => {
       
       scene.add(cubes);
     };  
-
+  let requestId;
   const render = function () {
-      requestAnimationFrame(render);
+      requestId = requestAnimationFrame(render);
     
       renderer.render(scene, camera);
   };
   createCubes();
   render();
+
+  return () => {
+    cancelAnimationFrame(requestId);
+  }
+
   }
               }, [work]);
 

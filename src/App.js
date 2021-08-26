@@ -3,7 +3,7 @@ import Gallery from './Gallery.js';
 import {useState, useEffect} from 'react'
 
 function App() {
-  const [user, setUser] = useState({email: "b@test.com", userId: 2})
+  const [user, setUser] = useState({email: "b@test.com", id: 2})
   const [works, setWorks] = useState([])
 
   useEffect(() =>{
@@ -20,9 +20,8 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        
       </header>
-      <Gallery user={user} works= {works} setWorks={setWorks}></Gallery>
+      <Gallery user={user} setUser={setUser} works= {works} setWorks={setWorks}></Gallery>
     </div>
   );
 }
