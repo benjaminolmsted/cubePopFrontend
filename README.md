@@ -22,9 +22,6 @@ The colorpicker is
 
 ![Animation1](https://user-images.githubusercontent.com/734083/131168632-268cde07-5388-47fd-b15e-ce9eed4a72f0.gif)
 
-to do: 
-[] video walk through
-[]deploy
 
 
 ## Available Scripts
