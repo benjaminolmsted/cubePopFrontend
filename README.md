@@ -3,7 +3,7 @@
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 It's true. 
-We also used a Sinatra based backend, found here:
+We also used a Sinatra based backend, found here: https://github.com/benjaminolmsted/phase-3-sinatra-react-project
 
 Just clone down both repos, 
 
